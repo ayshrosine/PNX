@@ -9,12 +9,12 @@ export const DEMO_CLIENT_2_ID = 'c2222222-2222-2222-2222-222222222222';
 export const DEMO_CLIENT_3_ID = 'c3333333-3333-3333-3333-333333333333';
 export const DEMO_CLIENT_4_ID = 'c4444444-4444-4444-4444-444444444444';
 
-export const DEMO_SERIES_ID = 's1111111-1111-1111-1111-111111111111';
+export const DEMO_SERIES_ID = 'b1111111-1111-1111-1111-111111111111';
 
-export const DEMO_TEMPLATE_PRE_DUE = 't1111111-1111-1111-1111-111111111111';
-export const DEMO_TEMPLATE_ON_DUE = 't2222222-2222-2222-2222-222222222222';
-export const DEMO_TEMPLATE_OVERDUE_7 = 't3333333-3333-3333-3333-333333333333';
-export const DEMO_TEMPLATE_OVERDUE_30 = 't4444444-4444-4444-4444-444444444444';
+export const DEMO_TEMPLATE_PRE_DUE = 'd1111111-1111-1111-1111-111111111111';
+export const DEMO_TEMPLATE_ON_DUE = 'd2222222-2222-2222-2222-222222222222';
+export const DEMO_TEMPLATE_OVERDUE_7 = 'd3333333-3333-3333-3333-333333333333';
+export const DEMO_TEMPLATE_OVERDUE_30 = 'd4444444-4444-4444-4444-444444444444';
 
 export interface SeedTenant {
   id: string;
@@ -156,7 +156,7 @@ export function getInitialSeedData() {
 
   const memberships: any[] = [
     {
-      id: 'm1111111-1111-1111-1111-111111111111',
+      id: 'a1111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       userId: DEMO_USER_ID,
       role: 'OWNER',
@@ -166,7 +166,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'm2222222-2222-2222-2222-222222222222',
+      id: 'a2222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
       userId: DEMO_ACCOUNTANT_ID,
       role: 'ACCOUNTANT',
@@ -255,7 +255,7 @@ export function getInitialSeedData() {
 
   const rules: any[] = [
     {
-      id: 'r1111111-1111-1111-1111-111111111111',
+      id: 'e1111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       clientId: null,
       name: '3 Days Before Due',
@@ -272,7 +272,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'r2222222-2222-2222-2222-222222222222',
+      id: 'e2222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
       clientId: null,
       name: 'On Due Date',
@@ -289,7 +289,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'r3333333-3333-3333-3333-333333333333',
+      id: 'e3333333-3333-3333-3333-333333333333',
       tenantId: DEMO_TENANT_ID,
       clientId: null,
       name: '7 Days Overdue',
@@ -306,7 +306,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'r4444444-4444-4444-4444-444444444444',
+      id: 'e4444444-4444-4444-4444-444444444444',
       tenantId: DEMO_TENANT_ID,
       clientId: null,
       name: '30 Days Overdue Escalate',
@@ -429,7 +429,7 @@ export function getInitialSeedData() {
 
   const contacts: any[] = [
     {
-      id: 'ct111111-1111-1111-1111-111111111111',
+      id: 'c1111110-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_1_ID,
       name: 'Anand Verma',
@@ -445,7 +445,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'ct222222-2222-2222-2222-222222222222',
+      id: 'c2222220-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_2_ID,
       name: 'Priya Sundaram',
@@ -461,7 +461,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'ct333333-3333-3333-3333-333333333333',
+      id: 'c3333330-3333-3333-3333-333333333333',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_3_ID,
       name: 'Vikram Seth',
@@ -477,7 +477,7 @@ export function getInitialSeedData() {
       updatedAt: new Date().toISOString(),
     },
     {
-      id: 'ct444444-4444-4444-4444-444444444444',
+      id: 'c4444440-4444-4444-4444-444444444444',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_4_ID,
       name: 'Kavita Patil',
@@ -496,7 +496,7 @@ export function getInitialSeedData() {
 
   const invoices: any[] = [
     {
-      id: 'inv11111-1111-1111-1111-111111111111',
+      id: 'f1111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_1_ID,
       seriesId: DEMO_SERIES_ID,
@@ -540,9 +540,9 @@ export function getInitialSeedData() {
       updatedAt: '2026-08-15T10:00:00.000Z',
       items: [
         {
-          id: 'item11111-1111-1111-1111-111111111111',
+          id: '11111111-1111-1111-1111-111111111111',
           tenantId: DEMO_TENANT_ID,
-          invoiceId: 'inv11111-1111-1111-1111-111111111111',
+          invoiceId: 'f1111111-1111-1111-1111-111111111111',
           position: 1,
           description: 'Cloud Infrastructure Architecture & Cost Optimization',
           hsnSac: '998314',
@@ -558,7 +558,7 @@ export function getInitialSeedData() {
       ],
     },
     {
-      id: 'inv22222-2222-2222-2222-222222222222',
+      id: 'f2222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_2_ID,
       seriesId: DEMO_SERIES_ID,
@@ -602,9 +602,9 @@ export function getInitialSeedData() {
       updatedAt: '2026-09-18T12:00:00.000Z',
       items: [
         {
-          id: 'item22222-2222-2222-2222-222222222222',
+          id: '22222222-2222-2222-2222-222222222222',
           tenantId: DEMO_TENANT_ID,
-          invoiceId: 'inv22222-2222-2222-2222-222222222222',
+          invoiceId: 'f2222222-2222-2222-2222-222222222222',
           position: 1,
           description: 'Payment Terminal API Integration & Webhook Setup',
           hsnSac: '998313',
@@ -620,7 +620,7 @@ export function getInitialSeedData() {
       ],
     },
     {
-      id: 'inv33333-3333-3333-3333-333333333333',
+      id: 'f3333333-3333-3333-3333-333333333333',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_3_ID,
       seriesId: DEMO_SERIES_ID,
@@ -664,9 +664,9 @@ export function getInitialSeedData() {
       updatedAt: '2026-09-20T11:00:00.000Z',
       items: [
         {
-          id: 'item33333-3333-3333-3333-333333333333',
+          id: '33333333-3333-3333-3333-333333333333',
           tenantId: DEMO_TENANT_ID,
-          invoiceId: 'inv33333-3333-3333-3333-333333333333',
+          invoiceId: 'f3333333-3333-3333-3333-333333333333',
           position: 1,
           description: 'Enterprise BI Analytics Dashboard Development',
           hsnSac: '998314',
@@ -682,7 +682,7 @@ export function getInitialSeedData() {
       ],
     },
     {
-      id: 'inv44444-4444-4444-4444-444444444444',
+      id: 'f4444444-4444-4444-4444-444444444444',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_4_ID,
       seriesId: DEMO_SERIES_ID,
@@ -727,9 +727,9 @@ export function getInitialSeedData() {
       updatedAt: '2026-08-28T16:00:00.000Z',
       items: [
         {
-          id: 'item44444-4444-4444-4444-444444444444',
+          id: '44444444-4444-4444-4444-444444444444',
           tenantId: DEMO_TENANT_ID,
-          invoiceId: 'inv44444-4444-4444-4444-444444444444',
+          invoiceId: 'f4444444-4444-4444-4444-444444444444',
           position: 1,
           description: 'SLA Support & Server Maintenance (August 2026)',
           hsnSac: '998314',
@@ -745,7 +745,7 @@ export function getInitialSeedData() {
       ],
     },
     {
-      id: 'inv55555-5555-5555-5555-555555555555',
+      id: 'f5555555-5555-5555-5555-555555555555',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_1_ID,
       seriesId: DEMO_SERIES_ID,
@@ -789,9 +789,9 @@ export function getInitialSeedData() {
       updatedAt: '2026-10-05T09:00:00.000Z',
       items: [
         {
-          id: 'item55555-5555-5555-5555-555555555555',
+          id: '55555555-5555-5555-5555-555555555555',
           tenantId: DEMO_TENANT_ID,
-          invoiceId: 'inv55555-5555-5555-5555-555555555555',
+          invoiceId: 'f5555555-5555-5555-5555-555555555555',
           position: 1,
           description: 'Quarterly Cybersecurity Vulnerability Assessment',
           hsnSac: '998316',
@@ -810,7 +810,7 @@ export function getInitialSeedData() {
 
   const payments: any[] = [
     {
-      id: 'pay11111-1111-1111-1111-111111111111',
+      id: 'fa111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_4_ID,
       amount: '70800.00',
@@ -825,10 +825,10 @@ export function getInitialSeedData() {
       updatedAt: '2026-08-28T16:00:00.000Z',
       allocations: [
         {
-          id: 'alloc1111-1111-1111-1111-111111111111',
+          id: 'aa111111-1111-1111-1111-111111111111',
           tenantId: DEMO_TENANT_ID,
-          paymentId: 'pay11111-1111-1111-1111-111111111111',
-          invoiceId: 'inv44444-4444-4444-4444-444444444444',
+          paymentId: 'fa111111-1111-1111-1111-111111111111',
+          invoiceId: 'f4444444-4444-4444-4444-444444444444',
           amount: '70800.00',
           tdsAmount: '0.00',
           createdAt: '2026-08-28T16:00:00.000Z',
@@ -836,7 +836,7 @@ export function getInitialSeedData() {
       ],
     },
     {
-      id: 'pay22222-2222-2222-2222-222222222222',
+      id: 'fa222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
       clientId: DEMO_CLIENT_2_ID,
       amount: '50000.00',
@@ -851,10 +851,10 @@ export function getInitialSeedData() {
       updatedAt: '2026-09-18T12:00:00.000Z',
       allocations: [
         {
-          id: 'alloc2222-2222-2222-2222-222222222222',
+          id: 'aa222222-2222-2222-2222-222222222222',
           tenantId: DEMO_TENANT_ID,
-          paymentId: 'pay22222-2222-2222-2222-222222222222',
-          invoiceId: 'inv22222-2222-2222-2222-222222222222',
+          paymentId: 'fa222222-2222-2222-2222-222222222222',
+          invoiceId: 'f2222222-2222-2222-2222-222222222222',
           amount: '50000.00',
           tdsAmount: '0.00',
           createdAt: '2026-09-18T12:00:00.000Z',
@@ -865,12 +865,12 @@ export function getInitialSeedData() {
 
   const reminders: any[] = [
     {
-      id: 'rem11111-1111-1111-1111-111111111111',
+      id: 'fb111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
-      invoiceId: 'inv11111-1111-1111-1111-111111111111',
+      invoiceId: 'f1111111-1111-1111-1111-111111111111',
       clientId: DEMO_CLIENT_1_ID,
-      ruleId: 'r3333333-3333-3333-3333-333333333333',
-      contactId: 'ct111111-1111-1111-1111-111111111111',
+      ruleId: 'e3333333-3333-3333-3333-333333333333',
+      contactId: 'c1111110-1111-1111-1111-111111111111',
       channel: 'EMAIL',
       status: 'DRAFT',
       dedupeKey: 'inv1:r3:2026-09-21',
@@ -888,12 +888,12 @@ export function getInitialSeedData() {
       updatedAt: '2026-09-21T09:00:00.000Z',
     },
     {
-      id: 'rem22222-2222-2222-2222-222222222222',
+      id: 'fb222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
-      invoiceId: 'inv22222-2222-2222-2222-222222222222',
+      invoiceId: 'f2222222-2222-2222-2222-222222222222',
       clientId: DEMO_CLIENT_2_ID,
-      ruleId: 'r3333333-3333-3333-3333-333333333333',
-      contactId: 'ct222222-2222-2222-2222-222222222222',
+      ruleId: 'e3333333-3333-3333-3333-333333333333',
+      contactId: 'c2222220-2222-2222-2222-222222222222',
       channel: 'EMAIL',
       status: 'DRAFT',
       dedupeKey: 'inv2:r3:2026-09-23',
@@ -914,9 +914,9 @@ export function getInitialSeedData() {
 
   const activities: any[] = [
     {
-      id: 'act11111-1111-1111-1111-111111111111',
+      id: 'fc111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
-      invoiceId: 'inv11111-1111-1111-1111-111111111111',
+      invoiceId: 'f1111111-1111-1111-1111-111111111111',
       type: 'CALL',
       body: 'Spoke with Anand Verma. He mentioned internal finance approval is done, releasing payment on Friday.',
       promisedDate: '2026-10-09',
@@ -924,9 +924,9 @@ export function getInitialSeedData() {
       createdAt: '2026-10-06T11:00:00.000Z',
     },
     {
-      id: 'act22222-2222-2222-2222-222222222222',
+      id: 'fc222222-2222-2222-2222-222222222222',
       tenantId: DEMO_TENANT_ID,
-      invoiceId: 'inv22222-2222-2222-2222-222222222222',
+      invoiceId: 'f2222222-2222-2222-2222-222222222222',
       type: 'PROMISE_TO_PAY',
       body: 'Priya confirmed balance ₹50,300 will be paid by 10th October.',
       promisedDate: '2026-10-10',
@@ -939,7 +939,7 @@ export function getInitialSeedData() {
   const creditNotes: any[] = [];
   const notifications: any[] = [
     {
-      id: 'notif111-1111-1111-1111-111111111111',
+      id: 'fd111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
       userId: DEMO_USER_ID,
       type: 'REMINDERS_PENDING',
@@ -959,7 +959,7 @@ export function getInitialSeedData() {
       actorType: 'USER',
       action: 'invoice.issued',
       entity: 'invoice',
-      entityId: 'inv11111-1111-1111-1111-111111111111',
+      entityId: 'f1111111-1111-1111-1111-111111111111',
       before: null,
       after: { number: 'INV/2026-27/0101', total: '141600.00' },
       createdAt: '2026-08-15T10:00:00.000Z',
@@ -971,7 +971,7 @@ export function getInitialSeedData() {
       actorType: 'USER',
       action: 'payment.recorded',
       entity: 'payment',
-      entityId: 'pay22222-2222-2222-2222-222222222222',
+      entityId: 'fa222222-2222-2222-2222-222222222222',
       before: null,
       after: { amount: '50000.00', reference: 'UPI-29182390192' },
       createdAt: '2026-09-18T12:00:00.000Z',
@@ -998,3 +998,4 @@ export function getInitialSeedData() {
     auditLogs,
   };
 }
+
