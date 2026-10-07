@@ -40,7 +40,7 @@ app.use(morgan('dev'));
 app.use(requestIdMiddleware);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get(['/healthz', '/api/health'], (req, res) => {
   res.json({
     status: 'healthy',
     environment: config.nodeEnv,

@@ -44,7 +44,7 @@ export default function ImportsPage() {
     a.href = url;
     a.download = `${kind.toLowerCase()}_sample_template.csv`;
     a.click();
-    URL.revokeObjectURL(a);
+    URL.revokeObjectURL(url);
     toast.success(`Downloaded sample ${kind.toLowerCase()} CSV template`);
   };
 

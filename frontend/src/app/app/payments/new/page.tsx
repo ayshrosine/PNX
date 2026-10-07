@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -16,7 +16,7 @@ import { api } from '@/lib/api';
 import { formatInr, formatDate } from '@/lib/utils';
 import { toast } from 'sonner';
 
-export default function RecordPaymentPage() {
+function RecordPaymentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialInvoiceId = searchParams.get('invoiceId') || '';
@@ -405,3 +405,18 @@ export default function RecordPaymentPage() {
     </div>
   );
 }
+
+export default function RecordPaymentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-96 items-center justify-center">
+          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+    >
+      <RecordPaymentForm />
+    </Suspense>
+  );
+}
+
