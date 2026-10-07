@@ -16,6 +16,44 @@ export const DEMO_TEMPLATE_ON_DUE = 't2222222-2222-2222-2222-222222222222';
 export const DEMO_TEMPLATE_OVERDUE_7 = 't3333333-3333-3333-3333-333333333333';
 export const DEMO_TEMPLATE_OVERDUE_30 = 't4444444-4444-4444-4444-444444444444';
 
+export interface SeedTenant {
+  id: string;
+  name: string;
+  legalName: string;
+  slug: string;
+  status: string;
+  gstin: string;
+  pan: string;
+  stateCode: string;
+  state: string;
+  city: string;
+  addressLine1: string;
+  pincode: string;
+  country: string;
+  email: string;
+  phone: string;
+  website: string;
+  bankName: string;
+  bankAccountName: string;
+  bankAccountLast4: string;
+  bankIfsc: string;
+  upiId: string;
+  currency: string;
+  timezone: string;
+  fiscalYearStart: number;
+  defaultDueDays: number;
+  defaultNotes: string;
+  defaultTerms: string;
+  quietHoursStart: string;
+  quietHoursEnd: string;
+  sendOnWeekends: boolean;
+  weeklyReportDay: number;
+  onboardingStep: string;
+  settings: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function getInitialSeedData() {
   const hashedPassword = bcrypt.hashSync('Password123!', 10);
 
@@ -52,7 +90,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const tenant = {
+  const tenant: SeedTenant = {
     id: DEMO_TENANT_ID,
     name: 'Acme Cloud Studio LLP',
     legalName: 'Acme Cloud Studio LLP',
@@ -78,6 +116,8 @@ export function getInitialSeedData() {
     timezone: 'Asia/Kolkata',
     fiscalYearStart: 4,
     defaultDueDays: 30,
+    defaultNotes: 'Thank you for your partnership. Prompt payment keeps service smooth.',
+    defaultTerms: 'Payment due in 30 days. Subject to Mumbai jurisdiction.',
     quietHoursStart: '20:00',
     quietHoursEnd: '09:00',
     sendOnWeekends: false,
@@ -91,7 +131,7 @@ export function getInitialSeedData() {
     updatedAt: new Date().toISOString(),
   };
 
-  const users = [
+  const users: any[] = [
     {
       id: DEMO_USER_ID,
       email: 'demo@pnx.com',
@@ -114,7 +154,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const memberships = [
+  const memberships: any[] = [
     {
       id: 'm1111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -137,7 +177,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const series = [
+  const series: any[] = [
     {
       id: DEMO_SERIES_ID,
       tenantId: DEMO_TENANT_ID,
@@ -154,7 +194,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const templates = [
+  const templates: any[] = [
     {
       id: DEMO_TEMPLATE_PRE_DUE,
       tenantId: DEMO_TENANT_ID,
@@ -213,7 +253,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const rules = [
+  const rules: any[] = [
     {
       id: 'r1111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -284,7 +324,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const clients = [
+  const clients: any[] = [
     {
       id: DEMO_CLIENT_1_ID,
       tenantId: DEMO_TENANT_ID,
@@ -387,7 +427,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const contacts = [
+  const contacts: any[] = [
     {
       id: 'ct111111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -454,7 +494,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const invoices = [
+  const invoices: any[] = [
     {
       id: 'inv11111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -488,8 +528,11 @@ export function getInitialSeedData() {
       terms: 'Payment due in 30 days. Subject to Mumbai jurisdiction.',
       publicToken: 'token-tc-0101-demo-view',
       sentAt: '2026-08-15T10:00:00.000Z',
+      voidedAt: null,
+      voidReason: null,
       viewCount: 4,
       firstViewedAt: '2026-08-16T11:20:00.000Z',
+      lastViewedAt: '2026-08-16T11:20:00.000Z',
       isDisputed: false,
       remindersPaused: false,
       version: 1,
@@ -525,7 +568,7 @@ export function getInitialSeedData() {
       issueDate: '2026-09-01',
       dueDate: '2026-09-16',
       currency: 'INR',
-      placeOfSupply: '29', // Karnataka -> inter-state!
+      placeOfSupply: '29',
       isReverseCharge: false,
       isInterState: true,
       poNumber: 'PO-NX-4412',
@@ -547,8 +590,11 @@ export function getInitialSeedData() {
       terms: 'Net 15 days terms.',
       publicToken: 'token-nx-0102-demo-view',
       sentAt: '2026-09-01T10:00:00.000Z',
+      voidedAt: null,
+      voidReason: null,
       viewCount: 2,
       firstViewedAt: '2026-09-02T14:10:00.000Z',
+      lastViewedAt: '2026-09-02T14:10:00.000Z',
       isDisputed: false,
       remindersPaused: false,
       version: 2,
@@ -584,7 +630,7 @@ export function getInitialSeedData() {
       issueDate: '2026-09-20',
       dueDate: '2026-10-15',
       currency: 'INR',
-      placeOfSupply: '07', // Delhi -> inter-state
+      placeOfSupply: '07',
       isReverseCharge: false,
       isInterState: true,
       poNumber: 'PO-APX-880',
@@ -606,8 +652,11 @@ export function getInitialSeedData() {
       terms: 'Standard terms.',
       publicToken: 'token-apx-0103-demo-view',
       sentAt: '2026-09-20T11:00:00.000Z',
+      voidedAt: null,
+      voidReason: null,
       viewCount: 1,
       firstViewedAt: '2026-09-22T08:30:00.000Z',
+      lastViewedAt: '2026-09-22T08:30:00.000Z',
       isDisputed: false,
       remindersPaused: false,
       version: 1,
@@ -665,8 +714,12 @@ export function getInitialSeedData() {
       terms: 'Net 30 days.',
       publicToken: 'token-sl-0104-demo-view',
       sentAt: '2026-08-01T10:00:00.000Z',
+      voidedAt: null,
+      voidReason: null,
       paidAt: '2026-08-28T16:00:00.000Z',
       viewCount: 3,
+      firstViewedAt: '2026-08-02T10:00:00.000Z',
+      lastViewedAt: '2026-08-02T10:00:00.000Z',
       isDisputed: false,
       remindersPaused: false,
       version: 2,
@@ -723,7 +776,12 @@ export function getInitialSeedData() {
       notes: 'Draft awaiting client PO confirmation.',
       terms: 'Standard terms.',
       publicToken: 'token-tc-draft-demo-view',
+      sentAt: null,
+      voidedAt: null,
+      voidReason: null,
       viewCount: 0,
+      firstViewedAt: null,
+      lastViewedAt: null,
       isDisputed: false,
       remindersPaused: false,
       version: 1,
@@ -750,7 +808,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const payments = [
+  const payments: any[] = [
     {
       id: 'pay11111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -805,7 +863,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const reminders = [
+  const reminders: any[] = [
     {
       id: 'rem11111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -814,13 +872,17 @@ export function getInitialSeedData() {
       ruleId: 'r3333333-3333-3333-3333-333333333333',
       contactId: 'ct111111-1111-1111-1111-111111111111',
       channel: 'EMAIL',
-      status: 'DRAFT', // Waiting for approval in "Today" action queue!
+      status: 'DRAFT',
       dedupeKey: 'inv1:r3:2026-09-21',
       dueForDate: '2026-09-21',
       subject: 'Payment follow-up: Invoice INV/2026-27/0101 is overdue',
       body: 'Hi Anand Verma,\n\nWe noticed invoice INV/2026-27/0101 for ₹1,41,600.00 is now 23 days overdue.\nCould you please confirm the payment schedule or share the transaction UTR?\nView details: http://localhost:3000/p/token-tc-0101-demo-view',
       toEmail: 'anand.verma@techcorp.in',
+      toPhone: null,
       requiresApproval: true,
+      approvedAt: null,
+      skipReason: null,
+      sentAt: null,
       attempts: 0,
       createdAt: '2026-09-21T09:00:00.000Z',
       updatedAt: '2026-09-21T09:00:00.000Z',
@@ -833,20 +895,24 @@ export function getInitialSeedData() {
       ruleId: 'r3333333-3333-3333-3333-333333333333',
       contactId: 'ct222222-2222-2222-2222-222222222222',
       channel: 'EMAIL',
-      status: 'DRAFT', // Also waiting for approval!
+      status: 'DRAFT',
       dedupeKey: 'inv2:r3:2026-09-23',
       dueForDate: '2026-09-23',
       subject: 'Payment follow-up: Remaining balance on Invoice INV/2026-27/0102',
       body: 'Hi Priya Sundaram,\n\nThank you for the partial payment of ₹50,000.00. The remaining balance of ₹50,300.00 on invoice INV/2026-27/0102 is currently overdue.\nPlease let us know when the remaining transfer will be scheduled.',
       toEmail: 'priya@nexusretail.io',
+      toPhone: null,
       requiresApproval: true,
+      approvedAt: null,
+      skipReason: null,
+      sentAt: null,
       attempts: 0,
       createdAt: '2026-09-23T09:00:00.000Z',
       updatedAt: '2026-09-23T09:00:00.000Z',
     },
   ];
 
-  const activities = [
+  const activities: any[] = [
     {
       id: 'act11111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -871,7 +937,7 @@ export function getInitialSeedData() {
 
   const disputes: any[] = [];
   const creditNotes: any[] = [];
-  const notifications = [
+  const notifications: any[] = [
     {
       id: 'notif111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,
@@ -885,7 +951,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const auditLogs = [
+  const auditLogs: any[] = [
     {
       id: 'aud11111-1111-1111-1111-111111111111',
       tenantId: DEMO_TENANT_ID,

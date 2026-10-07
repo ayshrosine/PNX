@@ -26,7 +26,8 @@ clientsRouter.post(
 );
 
 clientsRouter.get('/:id', requirePermission('client:read'), async (req: AuthenticatedRequest, res) => {
-  const client = await dbStore.getClientById(req.auth!.tenantId, req.params.id);
+  const clientId = String(req.params.id);
+  const client = await dbStore.getClientById(req.auth!.tenantId, clientId);
   if (!client) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Client not found', requestId: req.auth!.requestId },
@@ -36,7 +37,8 @@ clientsRouter.get('/:id', requirePermission('client:read'), async (req: Authenti
 });
 
 clientsRouter.patch('/:id', requirePermission('client:edit'), async (req: AuthenticatedRequest, res) => {
-  const updated = await dbStore.updateClient(req.auth!.tenantId, req.params.id, req.body);
+  const clientId = String(req.params.id);
+  const updated = await dbStore.updateClient(req.auth!.tenantId, clientId, req.body);
   if (!updated) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Client not found', requestId: req.auth!.requestId },
@@ -46,8 +48,9 @@ clientsRouter.patch('/:id', requirePermission('client:edit'), async (req: Authen
 });
 
 clientsRouter.post('/:id/pause-reminders', requirePermission('client:edit'), async (req: AuthenticatedRequest, res) => {
+  const clientId = String(req.params.id);
   const { reason, until } = req.body;
-  const updated = await dbStore.updateClient(req.auth!.tenantId, req.params.id, {
+  const updated = await dbStore.updateClient(req.auth!.tenantId, clientId, {
     remindersPaused: true,
     pauseReason: reason || 'Paused by user',
     pausedUntil: until || null,
@@ -56,7 +59,8 @@ clientsRouter.post('/:id/pause-reminders', requirePermission('client:edit'), asy
 });
 
 clientsRouter.post('/:id/resume-reminders', requirePermission('client:edit'), async (req: AuthenticatedRequest, res) => {
-  const updated = await dbStore.updateClient(req.auth!.tenantId, req.params.id, {
+  const clientId = String(req.params.id);
+  const updated = await dbStore.updateClient(req.auth!.tenantId, clientId, {
     remindersPaused: false,
     pauseReason: null,
     pausedUntil: null,
@@ -65,8 +69,9 @@ clientsRouter.post('/:id/resume-reminders', requirePermission('client:edit'), as
 });
 
 clientsRouter.get('/:id/contacts', requirePermission('client:read'), async (req: AuthenticatedRequest, res) => {
+  const clientId = String(req.params.id);
   const contacts = memStore.data.contacts.filter(
-    (c) => c.clientId === req.params.id && c.tenantId === req.auth!.tenantId
+    (c: any) => c.clientId === clientId && c.tenantId === req.auth!.tenantId
   );
   res.json({ data: contacts, meta: { requestId: req.auth!.requestId } });
 });
@@ -76,10 +81,11 @@ clientsRouter.post(
   requirePermission('client:edit'),
   validateBody(ContactCreateSchema),
   async (req: AuthenticatedRequest, res) => {
-    const newContact = {
+    const clientId = String(req.params.id);
+    const newContact: any = {
       id: uuidv4(),
       tenantId: req.auth!.tenantId,
-      clientId: req.params.id,
+      clientId,
       name: req.body.name,
       designation: req.body.designation || null,
       email: req.body.email || null,
@@ -98,16 +104,17 @@ clientsRouter.post(
 );
 
 clientsRouter.get('/:id/statement', requirePermission('client:read'), async (req: AuthenticatedRequest, res) => {
-  const client = await dbStore.getClientById(req.auth!.tenantId, req.params.id);
+  const clientId = String(req.params.id);
+  const client = await dbStore.getClientById(req.auth!.tenantId, clientId);
   if (!client) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Client not found', requestId: req.auth!.requestId },
     });
   }
 
-  const invoices = await dbStore.getInvoices(req.auth!.tenantId, { clientId: req.params.id });
+  const invoices = await dbStore.getInvoices(req.auth!.tenantId, { clientId });
   const payments = memStore.data.payments.filter(
-    (p) => p.clientId === req.params.id && p.tenantId === req.auth!.tenantId
+    (p: any) => p.clientId === clientId && p.tenantId === req.auth!.tenantId
   );
 
   res.json({
@@ -122,13 +129,14 @@ clientsRouter.get('/:id/statement', requirePermission('client:read'), async (req
 });
 
 clientsRouter.get('/:id/timeline', requirePermission('client:read'), async (req: AuthenticatedRequest, res) => {
+  const clientId = String(req.params.id);
   const clientInvoices = memStore.data.invoices.filter(
-    (inv) => inv.clientId === req.params.id && inv.tenantId === req.auth!.tenantId
+    (inv: any) => inv.clientId === clientId && inv.tenantId === req.auth!.tenantId
   );
-  const invIds = clientInvoices.map((i) => i.id);
+  const invIds = clientInvoices.map((i: any) => i.id);
 
   const activities = memStore.data.activities.filter(
-    (a) => a.tenantId === req.auth!.tenantId && invIds.includes(a.invoiceId)
+    (a: any) => a.tenantId === req.auth!.tenantId && invIds.includes(a.invoiceId)
   );
 
   res.json({ data: activities, meta: { requestId: req.auth!.requestId } });

@@ -70,12 +70,14 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 
 export function requirePermission(permission: Permission) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const reqId = req.auth?.requestId || (req as any).requestId || 'req-rbac';
+
     if (!req.auth) {
       return res.status(401).json({
         error: {
           code: 'UNAUTHENTICATED',
           message: 'Authentication required',
-          requestId: req.auth?.requestId || (req as any).requestId,
+          requestId: reqId,
         },
       });
     }
@@ -88,18 +90,17 @@ export function requirePermission(permission: Permission) {
         error: {
           code: 'FORBIDDEN',
           message: `User role '${role}' does not have permission '${permission}'`,
-          requestId: req.auth.requestId,
+          requestId: reqId,
         },
       });
     }
 
-    // Special check for reminder approval right
     if (permission === 'reminder:approve' && role === 'ADMIN' && !canApprove) {
       return res.status(403).json({
         error: {
           code: 'FORBIDDEN',
           message: 'Admin account does not have reminder approval privilege',
-          requestId: req.auth.requestId,
+          requestId: reqId,
         },
       });
     }

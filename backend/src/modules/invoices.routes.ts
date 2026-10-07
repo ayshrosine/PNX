@@ -33,7 +33,7 @@ invoicesRouter.post('/preview', requirePermission('invoice:create'), async (req:
 });
 
 invoicesRouter.get('/next-number', requirePermission('invoice:create'), (req: AuthenticatedRequest, res) => {
-  const series = memStore.data.series.find((s) => s.tenantId === req.auth!.tenantId) || memStore.data.series[0];
+  const series = memStore.data.series.find((s: any) => s.tenantId === req.auth!.tenantId) || memStore.data.series[0];
   const nextNum = `${series.prefix}${series.fiscalYear}/${String(series.nextNumber).padStart(series.padding, '0')}${series.suffix}`;
   res.json({ data: { nextNumber: nextNum }, meta: { requestId: req.auth!.requestId } });
 });
@@ -55,7 +55,8 @@ invoicesRouter.post(
 );
 
 invoicesRouter.get('/:id', requirePermission('invoice:read'), async (req: AuthenticatedRequest, res) => {
-  const invoice = await dbStore.getInvoiceById(req.auth!.tenantId, req.params.id);
+  const invoiceId = String(req.params.id);
+  const invoice = await dbStore.getInvoiceById(req.auth!.tenantId, invoiceId);
   if (!invoice) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
@@ -65,7 +66,8 @@ invoicesRouter.get('/:id', requirePermission('invoice:read'), async (req: Authen
 });
 
 invoicesRouter.patch('/:id', requirePermission('invoice:edit'), async (req: AuthenticatedRequest, res) => {
-  const inv = memStore.data.invoices.find((i) => i.id === req.params.id && i.tenantId === req.auth!.tenantId);
+  const invoiceId = String(req.params.id);
+  const inv = memStore.data.invoices.find((i: any) => i.id === invoiceId && i.tenantId === req.auth!.tenantId);
   if (!inv) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
@@ -78,7 +80,7 @@ invoicesRouter.patch('/:id', requirePermission('invoice:edit'), async (req: Auth
   }
 
   const tenant = await dbStore.getTenant(req.auth!.tenantId);
-  const client = memStore.data.clients.find((c) => c.id === (req.body.clientId || inv.clientId));
+  const client = memStore.data.clients.find((c: any) => c.id === (req.body.clientId || inv.clientId));
 
   if (req.body.items) {
     const totals = computeInvoiceTotals(
@@ -121,7 +123,8 @@ invoicesRouter.patch('/:id', requirePermission('invoice:edit'), async (req: Auth
 });
 
 invoicesRouter.delete('/:id', requirePermission('invoice:edit'), (req: AuthenticatedRequest, res) => {
-  const index = memStore.data.invoices.findIndex((i) => i.id === req.params.id && i.tenantId === req.auth!.tenantId);
+  const invoiceId = String(req.params.id);
+  const index = memStore.data.invoices.findIndex((i: any) => i.id === invoiceId && i.tenantId === req.auth!.tenantId);
   if (index === -1) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
@@ -138,8 +141,9 @@ invoicesRouter.delete('/:id', requirePermission('invoice:edit'), (req: Authentic
 });
 
 invoicesRouter.post('/:id/issue', requirePermission('invoice:send'), async (req: AuthenticatedRequest, res) => {
+  const invoiceId = String(req.params.id);
   try {
-    const inv = await dbStore.issueAndSendInvoice(req.auth!.tenantId, req.params.id, {});
+    const inv = await dbStore.issueAndSendInvoice(req.auth!.tenantId, invoiceId, {});
     res.json({ data: inv, meta: { requestId: req.auth!.requestId } });
   } catch (err: any) {
     res.status(400).json({
@@ -153,8 +157,9 @@ invoicesRouter.post(
   requirePermission('invoice:send'),
   validateBody(InvoiceSendSchema),
   async (req: AuthenticatedRequest, res) => {
+    const invoiceId = String(req.params.id);
     try {
-      const inv = await dbStore.issueAndSendInvoice(req.auth!.tenantId, req.params.id, req.body);
+      const inv = await dbStore.issueAndSendInvoice(req.auth!.tenantId, invoiceId, req.body);
       res.json({ data: inv, meta: { requestId: req.auth!.requestId } });
     } catch (err: any) {
       res.status(400).json({
@@ -165,7 +170,8 @@ invoicesRouter.post(
 );
 
 invoicesRouter.get('/:id/pdf', requirePermission('invoice:read'), async (req: AuthenticatedRequest, res) => {
-  const invoice = await dbStore.getInvoiceById(req.auth!.tenantId, req.params.id);
+  const invoiceId = String(req.params.id);
+  const invoice = await dbStore.getInvoiceById(req.auth!.tenantId, invoiceId);
   if (!invoice) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
@@ -190,17 +196,18 @@ invoicesRouter.post(
   requirePermission('invoice:edit'),
   validateBody(ActivityCreateSchema),
   (req: AuthenticatedRequest, res) => {
-    const inv = memStore.data.invoices.find((i) => i.id === req.params.id && i.tenantId === req.auth!.tenantId);
+    const invoiceId = String(req.params.id);
+    const inv = memStore.data.invoices.find((i: any) => i.id === invoiceId && i.tenantId === req.auth!.tenantId);
     if (!inv) {
       return res.status(404).json({
         error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
       });
     }
 
-    const newActivity = {
+    const newActivity: any = {
       id: uuidv4(),
       tenantId: req.auth!.tenantId,
-      invoiceId: req.params.id,
+      invoiceId,
       type: req.body.type,
       body: req.body.body || null,
       promisedDate: req.body.promisedDate || null,
@@ -218,7 +225,8 @@ invoicesRouter.post(
   requirePermission('invoice:edit'),
   validateBody(DisputeCreateSchema),
   (req: AuthenticatedRequest, res) => {
-    const inv = memStore.data.invoices.find((i) => i.id === req.params.id && i.tenantId === req.auth!.tenantId);
+    const invoiceId = String(req.params.id);
+    const inv = memStore.data.invoices.find((i: any) => i.id === invoiceId && i.tenantId === req.auth!.tenantId);
     if (!inv) {
       return res.status(404).json({
         error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },
@@ -231,7 +239,7 @@ invoicesRouter.post(
     const newDispute = {
       id: uuidv4(),
       tenantId: req.auth!.tenantId,
-      invoiceId: req.params.id,
+      invoiceId,
       status: 'OPEN',
       reason: req.body.reason,
       raisedOn: new Date().toISOString().split('T')[0],
@@ -245,7 +253,8 @@ invoicesRouter.post(
 );
 
 invoicesRouter.post('/:id/duplicate', requirePermission('invoice:create'), async (req: AuthenticatedRequest, res) => {
-  const original = await dbStore.getInvoiceById(req.auth!.tenantId, req.params.id);
+  const invoiceId = String(req.params.id);
+  const original = await dbStore.getInvoiceById(req.auth!.tenantId, invoiceId);
   if (!original) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Original invoice not found', requestId: req.auth!.requestId },
@@ -277,7 +286,8 @@ invoicesRouter.post('/:id/duplicate', requirePermission('invoice:create'), async
 });
 
 invoicesRouter.post('/:id/void', requirePermission('invoice:void'), (req: AuthenticatedRequest, res) => {
-  const inv = memStore.data.invoices.find((i) => i.id === req.params.id && i.tenantId === req.auth!.tenantId);
+  const invoiceId = String(req.params.id);
+  const inv = memStore.data.invoices.find((i: any) => i.id === invoiceId && i.tenantId === req.auth!.tenantId);
   if (!inv) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found', requestId: req.auth!.requestId },

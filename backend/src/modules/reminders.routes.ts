@@ -15,20 +15,22 @@ remindersRouter.get('/', requirePermission('reminder:read'), async (req: Authent
 });
 
 remindersRouter.get('/:id', requirePermission('reminder:read'), (req: AuthenticatedRequest, res) => {
-  const rem = memStore.data.reminders.find((r) => r.id === req.params.id && r.tenantId === req.auth!.tenantId);
+  const remId = String(req.params.id);
+  const rem = memStore.data.reminders.find((r: any) => r.id === remId && r.tenantId === req.auth!.tenantId);
   if (!rem) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Reminder not found', requestId: req.auth!.requestId },
     });
   }
-  const invoice = memStore.data.invoices.find((i) => i.id === rem.invoiceId);
-  const client = memStore.data.clients.find((c) => c.id === rem.clientId);
+  const invoice = memStore.data.invoices.find((i: any) => i.id === rem.invoiceId);
+  const client = memStore.data.clients.find((c: any) => c.id === rem.clientId);
   res.json({ data: { ...rem, invoice, client }, meta: { requestId: req.auth!.requestId } });
 });
 
 remindersRouter.post('/:id/approve', requirePermission('reminder:approve'), async (req: AuthenticatedRequest, res) => {
+  const remId = String(req.params.id);
   try {
-    const rem = await dbStore.approveReminder(req.auth!.tenantId, req.params.id);
+    const rem = await dbStore.approveReminder(req.auth!.tenantId, remId);
     res.json({ data: rem, meta: { requestId: req.auth!.requestId } });
   } catch (err: any) {
     res.status(400).json({
@@ -38,8 +40,9 @@ remindersRouter.post('/:id/approve', requirePermission('reminder:approve'), asyn
 });
 
 remindersRouter.post('/:id/skip', requirePermission('reminder:approve'), async (req: AuthenticatedRequest, res) => {
+  const remId = String(req.params.id);
   try {
-    const rem = await dbStore.skipReminder(req.auth!.tenantId, req.params.id, req.body.reason);
+    const rem = await dbStore.skipReminder(req.auth!.tenantId, remId, req.body.reason);
     res.json({ data: rem, meta: { requestId: req.auth!.requestId } });
   } catch (err: any) {
     res.status(400).json({
@@ -49,8 +52,9 @@ remindersRouter.post('/:id/skip', requirePermission('reminder:approve'), async (
 });
 
 remindersRouter.post('/:id/send-now', requirePermission('reminder:approve'), async (req: AuthenticatedRequest, res) => {
+  const remId = String(req.params.id);
   try {
-    const rem = await dbStore.sendReminderNow(req.auth!.tenantId, req.params.id);
+    const rem = await dbStore.sendReminderNow(req.auth!.tenantId, remId);
     res.json({ data: rem, meta: { requestId: req.auth!.requestId } });
   } catch (err: any) {
     res.status(400).json({
@@ -90,7 +94,7 @@ remindersRouter.post(
   requirePermission('templates:manage'),
   validateBody(ReminderTemplateCreateSchema),
   async (req: AuthenticatedRequest, res) => {
-    const newTemplate = {
+    const newTemplate: any = {
       id: uuidv4(),
       tenantId: req.auth!.tenantId,
       name: req.body.name,
@@ -122,7 +126,7 @@ remindersRouter.post(
   requirePermission('rules:manage'),
   validateBody(ReminderRuleCreateSchema),
   async (req: AuthenticatedRequest, res) => {
-    const newRule = {
+    const newRule: any = {
       id: uuidv4(),
       tenantId: req.auth!.tenantId,
       clientId: req.body.clientId || null,

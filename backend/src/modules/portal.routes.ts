@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const portalRouter = Router();
 
 portalRouter.get('/invoices/:token', (req, res) => {
-  const inv = memStore.data.invoices.find((i) => i.publicToken === req.params.token);
+  const inv = memStore.data.invoices.find((i: any) => i.publicToken === req.params.token);
   if (!inv) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found or link has expired' },
@@ -17,7 +17,7 @@ portalRouter.get('/invoices/:token', (req, res) => {
   if (!inv.firstViewedAt) inv.firstViewedAt = new Date().toISOString();
   inv.lastViewedAt = new Date().toISOString();
 
-  const client = memStore.data.clients.find((c) => c.id === inv.clientId);
+  const client = memStore.data.clients.find((c: any) => c.id === inv.clientId);
   const tenant = memStore.data.tenant;
   const derived = calculateDerivedState(inv);
 
@@ -61,14 +61,14 @@ portalRouter.get('/invoices/:token', (req, res) => {
 });
 
 portalRouter.get('/invoices/:token/pdf', async (req, res) => {
-  const inv = memStore.data.invoices.find((i) => i.publicToken === req.params.token);
+  const inv = memStore.data.invoices.find((i: any) => i.publicToken === req.params.token);
   if (!inv) {
     return res.status(404).json({
       error: { code: 'NOT_FOUND', message: 'Invoice not found' },
     });
   }
 
-  const client = memStore.data.clients.find((c) => c.id === inv.clientId);
+  const client = memStore.data.clients.find((c: any) => c.id === inv.clientId);
   const tenant = memStore.data.tenant;
 
   try {
@@ -82,7 +82,7 @@ portalRouter.get('/invoices/:token/pdf', async (req, res) => {
 });
 
 portalRouter.post('/invoices/:token/acknowledge', (req, res) => {
-  const inv = memStore.data.invoices.find((i) => i.publicToken === req.params.token);
+  const inv = memStore.data.invoices.find((i: any) => i.publicToken === req.params.token);
   if (!inv) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Invoice not found' } });
 
   memStore.data.activities.push({
@@ -101,7 +101,7 @@ portalRouter.post('/invoices/:token/acknowledge', (req, res) => {
 
 portalRouter.post('/invoices/:token/promise', (req, res) => {
   const { promisedDate, message } = req.body;
-  const inv = memStore.data.invoices.find((i) => i.publicToken === req.params.token);
+  const inv = memStore.data.invoices.find((i: any) => i.publicToken === req.params.token);
   if (!inv) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Invoice not found' } });
 
   memStore.data.activities.push({
@@ -120,7 +120,7 @@ portalRouter.post('/invoices/:token/promise', (req, res) => {
 
 portalRouter.post('/invoices/:token/dispute', (req, res) => {
   const { message, contactEmail } = req.body;
-  const inv = memStore.data.invoices.find((i) => i.publicToken === req.params.token);
+  const inv = memStore.data.invoices.find((i: any) => i.publicToken === req.params.token);
   if (!inv) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Invoice not found' } });
 
   inv.isDisputed = true;

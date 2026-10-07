@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { getInitialSeedData, DEMO_TENANT_ID, DEMO_USER_ID } from './seed-data.js';
-import { isDbConnected, getPrismaClient } from './client.js';
-import { computeInvoiceTotals, LineItemInput } from '../shared/gst.js';
+import { getInitialSeedData, DEMO_TENANT_ID, DEMO_USER_ID, DEMO_SERIES_ID } from './seed-data.js';
+import { computeInvoiceTotals } from '../shared/gst.js';
 
 class InMemoryStore {
   public data: ReturnType<typeof getInitialSeedData>;
@@ -75,8 +74,8 @@ export const dbStore = {
   },
 
   async getMembers(tenantId: string) {
-    return memStore.data.memberships.map((m) => {
-      const user = memStore.data.users.find((u) => u.id === m.userId);
+    return memStore.data.memberships.map((m: any) => {
+      const user = memStore.data.users.find((u: any) => u.id === m.userId);
       return {
         ...m,
         user,
@@ -86,14 +85,14 @@ export const dbStore = {
 
   // Clients
   async getClients(tenantId: string, query?: { q?: string; archived?: boolean }) {
-    let list = memStore.data.clients.filter((c) => c.tenantId === tenantId);
+    let list = memStore.data.clients.filter((c: any) => c.tenantId === tenantId);
     if (!query?.archived) {
-      list = list.filter((c) => !c.archivedAt);
+      list = list.filter((c: any) => !c.archivedAt);
     }
     if (query?.q) {
       const term = query.q.toLowerCase();
       list = list.filter(
-        (c) =>
+        (c: any) =>
           c.name.toLowerCase().includes(term) ||
           (c.gstin && c.gstin.toLowerCase().includes(term)) ||
           (c.code && c.code.toLowerCase().includes(term))
@@ -101,9 +100,9 @@ export const dbStore = {
     }
 
     // Attach balances
-    return list.map((client) => {
+    return list.map((client: any) => {
       const clientInvoices = memStore.data.invoices.filter(
-        (inv) => inv.tenantId === tenantId && inv.clientId === client.id && ['SENT', 'PART_PAID'].includes(inv.status)
+        (inv: any) => inv.tenantId === tenantId && inv.clientId === client.id && ['SENT', 'PART_PAID'].includes(inv.status)
       );
 
       let outstanding = 0;
@@ -116,7 +115,7 @@ export const dbStore = {
       for (const inv of clientInvoices) {
         const bal = parseFloat(inv.balanceDue || '0');
         outstanding += bal;
-        const dueStr = inv.dueDate.split('T')[0];
+        const dueStr = typeof inv.dueDate === 'string' ? inv.dueDate.split('T')[0] : '';
         if (dueStr < today) {
           overdue += bal;
           overdueCount += 1;
@@ -139,12 +138,12 @@ export const dbStore = {
   },
 
   async getClientById(tenantId: string, id: string) {
-    const client = memStore.data.clients.find((c) => c.tenantId === tenantId && c.id === id);
+    const client = memStore.data.clients.find((c: any) => c.tenantId === tenantId && c.id === id);
     if (!client) return null;
 
-    const contacts = memStore.data.contacts.filter((ct) => ct.clientId === id && ct.tenantId === tenantId);
+    const contacts = memStore.data.contacts.filter((ct: any) => ct.clientId === id && ct.tenantId === tenantId);
     const invoices = await this.getInvoices(tenantId, { clientId: id });
-    const payments = memStore.data.payments.filter((p) => p.clientId === id && p.tenantId === tenantId);
+    const payments = memStore.data.payments.filter((p: any) => p.clientId === id && p.tenantId === tenantId);
 
     return {
       ...client,
@@ -155,7 +154,7 @@ export const dbStore = {
   },
 
   async createClient(tenantId: string, data: any) {
-    const newClient = {
+    const newClient: any = {
       id: uuidv4(),
       tenantId,
       name: data.name,
@@ -186,7 +185,7 @@ export const dbStore = {
     memStore.data.clients.unshift(newClient);
 
     if (data.contact) {
-      const newContact = {
+      const newContact: any = {
         id: uuidv4(),
         tenantId,
         clientId: newClient.id,
@@ -209,7 +208,7 @@ export const dbStore = {
   },
 
   async updateClient(tenantId: string, id: string, updates: any) {
-    const client = memStore.data.clients.find((c) => c.tenantId === tenantId && c.id === id);
+    const client = memStore.data.clients.find((c: any) => c.tenantId === tenantId && c.id === id);
     if (!client) return null;
     Object.assign(client, updates, { updatedAt: new Date().toISOString() });
     return client;
@@ -217,31 +216,31 @@ export const dbStore = {
 
   // Invoices
   async getInvoices(tenantId: string, filters?: { clientId?: string; status?: string; q?: string }) {
-    let list = memStore.data.invoices.filter((inv) => inv.tenantId === tenantId);
+    let list = memStore.data.invoices.filter((inv: any) => inv.tenantId === tenantId);
 
     if (filters?.clientId) {
-      list = list.filter((inv) => inv.clientId === filters.clientId);
+      list = list.filter((inv: any) => inv.clientId === filters.clientId);
     }
     if (filters?.status) {
       if (filters.status === 'OVERDUE') {
         const today = new Date().toISOString().split('T')[0];
-        list = list.filter((inv) => ['SENT', 'PART_PAID'].includes(inv.status) && inv.dueDate < today && parseFloat(inv.balanceDue) > 0);
+        list = list.filter((inv: any) => ['SENT', 'PART_PAID'].includes(inv.status) && inv.dueDate < today && parseFloat(inv.balanceDue) > 0);
       } else {
-        list = list.filter((inv) => inv.status === filters.status);
+        list = list.filter((inv: any) => inv.status === filters.status);
       }
     }
     if (filters?.q) {
       const q = filters.q.toLowerCase();
       list = list.filter(
-        (inv) =>
+        (inv: any) =>
           inv.number.toLowerCase().includes(q) ||
           (inv.reference && inv.reference.toLowerCase().includes(q)) ||
           (inv.poNumber && inv.poNumber.toLowerCase().includes(q))
       );
     }
 
-    return list.map((inv) => {
-      const client = memStore.data.clients.find((c) => c.id === inv.clientId);
+    return list.map((inv: any) => {
+      const client = memStore.data.clients.find((c: any) => c.id === inv.clientId);
       const derived = calculateDerivedState(inv);
       return {
         ...inv,
@@ -252,15 +251,15 @@ export const dbStore = {
   },
 
   async getInvoiceById(tenantId: string, id: string) {
-    const inv = memStore.data.invoices.find((i) => (i.id === id || i.publicToken === id) && (tenantId ? i.tenantId === tenantId : true));
+    const inv = memStore.data.invoices.find((i: any) => (i.id === id || i.publicToken === id) && (tenantId ? i.tenantId === tenantId : true));
     if (!inv) return null;
 
-    const client = memStore.data.clients.find((c) => c.id === inv.clientId);
-    const contacts = client ? memStore.data.contacts.filter((ct) => ct.clientId === client.id) : [];
-    const activities = memStore.data.activities.filter((a) => a.invoiceId === inv.id);
-    const reminders = memStore.data.reminders.filter((r) => r.invoiceId === inv.id);
-    const payments = memStore.data.payments.filter((p) =>
-      p.allocations.some((al: any) => al.invoiceId === inv.id)
+    const client = memStore.data.clients.find((c: any) => c.id === inv.clientId);
+    const contacts = client ? memStore.data.contacts.filter((ct: any) => ct.clientId === client.id) : [];
+    const activities = memStore.data.activities.filter((a: any) => a.invoiceId === inv.id);
+    const reminders = memStore.data.reminders.filter((r: any) => r.invoiceId === inv.id);
+    const payments = memStore.data.payments.filter((p: any) =>
+      p.allocations?.some((al: any) => al.invoiceId === inv.id)
     );
     const derived = calculateDerivedState(inv);
 
@@ -277,7 +276,7 @@ export const dbStore = {
 
   async createInvoice(tenantId: string, data: any) {
     const tenant = await this.getTenant(tenantId);
-    const client = memStore.data.clients.find((c) => c.id === data.clientId);
+    const client = memStore.data.clients.find((c: any) => c.id === data.clientId);
     if (!client) throw new Error('Client not found');
 
     const totals = computeInvoiceTotals(
@@ -289,7 +288,7 @@ export const dbStore = {
     const invoiceId = uuidv4();
     const shortCode = Math.random().toString(36).substring(2, 7);
 
-    const newInvoice = {
+    const newInvoice: any = {
       id: invoiceId,
       tenantId,
       clientId: data.clientId,
@@ -322,7 +321,11 @@ export const dbStore = {
       terms: data.terms || tenant.defaultTerms || null,
       publicToken: `token-${uuidv4()}`,
       sentAt: null,
+      voidedAt: null,
+      voidReason: null,
       viewCount: 0,
+      firstViewedAt: null,
+      lastViewedAt: null,
       isDisputed: false,
       remindersPaused: false,
       version: 1,
@@ -341,11 +344,11 @@ export const dbStore = {
   },
 
   async issueAndSendInvoice(tenantId: string, id: string, options: any) {
-    const inv = memStore.data.invoices.find((i) => i.id === id && i.tenantId === tenantId);
+    const inv = memStore.data.invoices.find((i: any) => i.id === id && i.tenantId === tenantId);
     if (!inv) throw new Error('Invoice not found');
 
     if (inv.status === 'DRAFT') {
-      const s = memStore.data.series.find((sr) => sr.id === inv.seriesId) || memStore.data.series[0];
+      const s = memStore.data.series.find((sr: any) => sr.id === inv.seriesId) || memStore.data.series[0];
       const seq = s.nextNumber;
       s.nextNumber += 1;
       const numStr = String(seq).padStart(s.padding, '0');
@@ -379,7 +382,7 @@ export const dbStore = {
       entity: 'invoice',
       entityId: id,
       before: null,
-      after: { number: inv.number, status: inv.status },
+      after: { number: inv.number, total: inv.total },
       createdAt: new Date().toISOString(),
     });
 
@@ -388,12 +391,12 @@ export const dbStore = {
 
   // Payments
   async getPayments(tenantId: string) {
-    return memStore.data.payments.filter((p) => p.tenantId === tenantId);
+    return memStore.data.payments.filter((p: any) => p.tenantId === tenantId);
   },
 
   async recordPayment(tenantId: string, data: any) {
     const paymentId = uuidv4();
-    const client = memStore.data.clients.find((c) => c.id === data.clientId);
+    const client = memStore.data.clients.find((c: any) => c.id === data.clientId);
     if (!client) throw new Error('Client not found');
 
     const totalAmount = parseFloat(data.amount);
@@ -403,10 +406,9 @@ export const dbStore = {
     let allocatedTotal = 0;
 
     if (data.autoAllocate) {
-      // Allocate to open invoices oldest first
       const openInvoices = memStore.data.invoices
-        .filter((inv) => inv.tenantId === tenantId && inv.clientId === data.clientId && ['SENT', 'PART_PAID'].includes(inv.status))
-        .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+        .filter((inv: any) => inv.tenantId === tenantId && inv.clientId === data.clientId && ['SENT', 'PART_PAID'].includes(inv.status))
+        .sort((a: any, b: any) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
       let remaining = totalAmount;
       for (const inv of openInvoices) {
@@ -425,7 +427,6 @@ export const dbStore = {
         remaining -= alloc;
         allocatedTotal += alloc;
 
-        // Update invoice balance
         const newPaid = parseFloat(inv.amountPaid) + alloc;
         const newBal = parseFloat(inv.total) - newPaid;
         inv.amountPaid = newPaid.toFixed(2);
@@ -435,7 +436,7 @@ export const dbStore = {
       }
     } else if (data.allocations && data.allocations.length > 0) {
       for (const item of data.allocations) {
-        const inv = memStore.data.invoices.find((i) => i.id === item.invoiceId);
+        const inv = memStore.data.invoices.find((i: any) => i.id === item.invoiceId);
         if (inv) {
           const itemAmt = parseFloat(item.amount);
           allocations.push({
@@ -461,7 +462,7 @@ export const dbStore = {
 
     const unallocated = Math.max(0, totalAmount - allocatedTotal);
 
-    const newPayment = {
+    const newPayment: any = {
       id: paymentId,
       tenantId,
       clientId: data.clientId,
@@ -480,7 +481,6 @@ export const dbStore = {
 
     memStore.data.payments.unshift(newPayment);
 
-    // Write audit log
     memStore.data.auditLogs.unshift({
       id: uuidv4(),
       tenantId,
@@ -499,13 +499,13 @@ export const dbStore = {
 
   // Reminders
   async getReminders(tenantId: string, status?: string) {
-    let list = memStore.data.reminders.filter((r) => r.tenantId === tenantId);
+    let list = memStore.data.reminders.filter((r: any) => r.tenantId === tenantId);
     if (status) {
-      list = list.filter((r) => r.status === status);
+      list = list.filter((r: any) => r.status === status);
     }
-    return list.map((rem) => {
-      const inv = memStore.data.invoices.find((i) => i.id === rem.invoiceId);
-      const cl = memStore.data.clients.find((c) => c.id === rem.clientId);
+    return list.map((rem: any) => {
+      const inv = memStore.data.invoices.find((i: any) => i.id === rem.invoiceId);
+      const cl = memStore.data.clients.find((c: any) => c.id === rem.clientId);
       return {
         ...rem,
         invoice: inv ? { number: inv.number, total: inv.total, balanceDue: inv.balanceDue, dueDate: inv.dueDate } : null,
@@ -515,7 +515,7 @@ export const dbStore = {
   },
 
   async approveReminder(tenantId: string, id: string) {
-    const rem = memStore.data.reminders.find((r) => r.id === id && r.tenantId === tenantId);
+    const rem = memStore.data.reminders.find((r: any) => r.id === id && r.tenantId === tenantId);
     if (!rem) throw new Error('Reminder not found');
     rem.status = 'APPROVED';
     rem.approvedAt = new Date().toISOString();
@@ -523,7 +523,7 @@ export const dbStore = {
   },
 
   async skipReminder(tenantId: string, id: string, reason?: string) {
-    const rem = memStore.data.reminders.find((r) => r.id === id && r.tenantId === tenantId);
+    const rem = memStore.data.reminders.find((r: any) => r.id === id && r.tenantId === tenantId);
     if (!rem) throw new Error('Reminder not found');
     rem.status = 'SKIPPED';
     rem.skipReason = reason || 'Skipped by admin';
@@ -531,7 +531,7 @@ export const dbStore = {
   },
 
   async sendReminderNow(tenantId: string, id: string) {
-    const rem = memStore.data.reminders.find((r) => r.id === id && r.tenantId === tenantId);
+    const rem = memStore.data.reminders.find((r: any) => r.id === id && r.tenantId === tenantId);
     if (!rem) throw new Error('Reminder not found');
     rem.status = 'SENT';
     rem.sentAt = new Date().toISOString();
@@ -541,22 +541,23 @@ export const dbStore = {
 
   // Templates & Rules
   async getReminderTemplates(tenantId: string) {
-    return memStore.data.templates.filter((t) => t.tenantId === tenantId);
+    return memStore.data.templates.filter((t: any) => t.tenantId === tenantId);
   },
 
   async getReminderRules(tenantId: string) {
-    return memStore.data.rules.filter((r) => r.tenantId === tenantId);
+    return memStore.data.rules.filter((r: any) => r.tenantId === tenantId);
   },
 
   // Actions & Today
   async getTodayActions(tenantId: string) {
     const reminders = await this.getReminders(tenantId, 'DRAFT');
-    const overdueInvoices = (await this.getInvoices(tenantId)).filter((inv) => inv.derived.isOverdue);
-    const dueSoonInvoices = (await this.getInvoices(tenantId)).filter((inv) => inv.derived.isDueSoon);
-    const draftInvoices = (await this.getInvoices(tenantId)).filter((inv) => inv.status === 'DRAFT');
+    const invoices = await this.getInvoices(tenantId);
+    const overdueInvoices = invoices.filter((inv) => inv.derived.isOverdue);
+    const dueSoonInvoices = invoices.filter((inv) => inv.derived.isDueSoon);
+    const draftInvoices = invoices.filter((inv) => inv.status === 'DRAFT');
 
     const todayStr = new Date().toISOString().split('T')[0];
-    const promisesToday = memStore.data.activities.filter((a) => a.tenantId === tenantId && a.promisedDate === todayStr);
+    const promisesToday = memStore.data.activities.filter((a: any) => a.tenantId === tenantId && a.promisedDate === todayStr);
 
     let totalOverdue = 0;
     for (const inv of overdueInvoices) {
@@ -614,18 +615,17 @@ export const dbStore = {
       }
     }
 
-    const payments = memStore.data.payments.filter((p) => p.tenantId === tenantId);
+    const payments = memStore.data.payments.filter((p: any) => p.tenantId === tenantId);
     for (const p of payments) {
       collectedThisMonth += parseFloat(p.amount || '0');
     }
 
-    // Top overdue clients
     const clients = await this.getClients(tenantId);
     const topOverdueClients = clients
-      .filter((c) => parseFloat(c.balances.overdue) > 0)
-      .sort((a, b) => parseFloat(b.balances.overdue) - parseFloat(a.balances.overdue))
+      .filter((c: any) => parseFloat(c.balances.overdue) > 0)
+      .sort((a: any, b: any) => parseFloat(b.balances.overdue) - parseFloat(a.balances.overdue))
       .slice(0, 5)
-      .map((c) => ({
+      .map((c: any) => ({
         id: c.id,
         name: c.name,
         overdue: c.balances.overdue,
@@ -639,7 +639,7 @@ export const dbStore = {
         overdueCount,
         dueIn7Days: dueIn7Days.toFixed(2),
         collectedThisMonth: collectedThisMonth.toFixed(2),
-        dsoDays: 28, // Days Sales Outstanding calculation
+        dsoDays: 28,
       },
       ageing: [
         { bucket: 'Current', amount: ageingBuckets['CURRENT'] },
@@ -662,6 +662,6 @@ export const dbStore = {
 
   // Audit
   async getAuditLogs(tenantId: string) {
-    return memStore.data.auditLogs.filter((a) => a.tenantId === tenantId);
+    return memStore.data.auditLogs.filter((a: any) => a.tenantId === tenantId);
   },
 };
